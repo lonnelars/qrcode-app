@@ -14,8 +14,10 @@
 
 <section>
 	<h1>Lag QR-kode av en URL</h1>
-	<label for="input">Skriv inn URL:</label>
-	<input type="text" id="input" bind:value={text} />
+	<div>
+		<label for="input">Skriv inn URL:</label>
+		<input type="text" id="input" bind:value={text} />
+	</div>
 	<div id="svg">
 		{#await promise then dataURL}
 			<img src={dataURL} alt={`En QR-kode av teksten "${text}"`} />
@@ -25,8 +27,6 @@
 
 <style>
 	section {
-		display: flex;
-		flex-direction: column;
 		max-width: 800px;
 	}
 
