@@ -23,5 +23,8 @@
 	"type": "module",
 	"dependencies": {
 		"qrcode": "^1.5.3"
+	},
+	"engines": {
+		"node": ">=18.13"
 	}
 }
