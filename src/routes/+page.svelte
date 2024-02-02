@@ -2,9 +2,8 @@
 	import QRCode from 'qrcode';
 
 	let text = 'https://www.kantega.no/';
-	$: promise = QRCode.toString(text, { type: 'svg', margin: 0 }).then((svgString) =>
-		URL.createObjectURL(new Blob([svgString], { type: 'image/svg+xml' }))
-	);
+	$: promise = QRCode.toDataURL(text, { type: 'image/png', margin: 0, width: 800 });
+	$: downloadName = new URL(text).host + '.png';
 </script>
 
 <svelte:head>
@@ -18,11 +17,12 @@
 		<label for="input">Skriv inn URL:</label>
 		<input type="text" id="input" bind:value={text} />
 	</div>
-	<div id="svg">
-		{#await promise then dataURL}
-			<img src={dataURL} alt={`En QR-kode av teksten "${text}"`} />
-		{/await}
-	</div>
+	{#await promise then dataURL}
+		<p>
+			<a href={dataURL} download={downloadName}>Last ned QR-koden</a>
+		</p>
+		<img src={dataURL} title={`qrcode-${text}.png`} alt={`En QR-kode av teksten "${text}"`} />
+	{/await}
 </section>
 
 <style>
@@ -36,7 +36,8 @@
 		gap: 2rem;
 	}
 
-	h1 {
+	h1,
+	p {
 		margin: 0;
 	}
 
@@ -47,10 +48,14 @@
 
 		& input {
 			font-size: 1.5rem;
-			padding: 1rem .5rem;
+			padding: 1rem 0.5rem;
 			border-radius: 10px;
-			border: 2px solid
-
+			border: 2px solid;
 		}
+	}
+
+	img {
+		width: 100%;
+		display: block;
 	}
 </style>
