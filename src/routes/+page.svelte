@@ -2,8 +2,24 @@
 	import QRCode from 'qrcode';
 
 	let text = 'https://www.kantega.no/';
-	$: promise = QRCode.toDataURL(text, { type: 'image/png', margin: 0, width: 800 });
-	$: downloadName = new URL(text).host + '.png';
+	$: dataURLPromise = QRCode.toDataURL(text, { type: 'image/png', margin: 0, width: 800 });
+
+	function downloadName(text) {
+		const url = makeURL(text);
+		if (url) {
+			return url.host + '.png';
+		} else {
+			return 'qrcode.png';
+		}
+	}
+
+	function makeURL(s) {
+		try {
+			return new URL(s);
+		} catch (error) {
+			return null;
+		}
+	}
 </script>
 
 <svelte:head>
@@ -17,9 +33,9 @@
 		<label for="input">Skriv inn URL:</label>
 		<input type="text" id="input" bind:value={text} />
 	</div>
-	{#await promise then dataURL}
+	{#await dataURLPromise then dataURL}
 		<p>
-			<a href={dataURL} download={downloadName}>Last ned QR-koden</a>
+			<a href={dataURL} download={downloadName(text)}>Last ned QR-koden</a>
 		</p>
 		<img src={dataURL} title={`qrcode-${text}.png`} alt={`En QR-kode av teksten "${text}"`} />
 	{/await}
